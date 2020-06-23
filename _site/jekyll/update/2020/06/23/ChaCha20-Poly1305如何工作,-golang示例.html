@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>ChaCha20-Poly1305如何工作, golang示例 | Silas’s Note</title>
+<meta name="generator" content="Jekyll v4.1.0" />
+<meta property="og:title" content="ChaCha20-Poly1305如何工作, golang示例" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="使用RFC 7539中定义的ChaCha20-Poly1305算法对消息进行加密和解密。" />
+<meta property="og:description" content="使用RFC 7539中定义的ChaCha20-Poly1305算法对消息进行加密和解密。" />
+<link rel="canonical" href="/jekyll/update/2020/06/23/ChaCha20-Poly1305%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C,-golang%E7%A4%BA%E4%BE%8B.html" />
+<meta property="og:url" content="/jekyll/update/2020/06/23/ChaCha20-Poly1305%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C,-golang%E7%A4%BA%E4%BE%8B.html" />
+<meta property="og:site_name" content="Silas’s Note" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-06-23T10:28:09+08:00" />
+<script type="application/ld+json">
+{"description":"使用RFC 7539中定义的ChaCha20-Poly1305算法对消息进行加密和解密。","@type":"BlogPosting","url":"/jekyll/update/2020/06/23/ChaCha20-Poly1305%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C,-golang%E7%A4%BA%E4%BE%8B.html","headline":"ChaCha20-Poly1305如何工作, golang示例","dateModified":"2020-06-23T10:28:09+08:00","datePublished":"2020-06-23T10:28:09+08:00","mainEntityOfPage":{"@type":"WebPage","@id":"/jekyll/update/2020/06/23/ChaCha20-Poly1305%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C,-golang%E7%A4%BA%E4%BE%8B.html"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Silas's Note" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Silas&#39;s Note</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">ChaCha20-Poly1305如何工作, golang示例</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2020-06-23T10:28:09+08:00" itemprop="datePublished">Jun 23, 2020
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>使用RFC 7539中定义的ChaCha20-Poly1305算法对消息进行加密和解密。</p>
+
+<p>1.1什么是ChaCha20-Poly1305 ？ 
+ChaCha20-Poly1305表示使用Poly1305身份验证器以AEAD模式运行的ChaCha20 （加密和解密算法）。</p>
+
+<p>1.2什么是AE或AEAD？</p>
+
+<p>认证加密（AE）和带有关联数据的认证加密（AEAD）是一种加密消息并一起认证加密的形式。</p>
+
+<p>1.3认证加密意味着什么？ 
+确保没有人修改密文（加密的消息），它的工作方式类似于验证文件的SHA或MD5哈希。 
+Poly1305生成一个MAC （消息验证码）（128位，16字节），并将其附加到ChaCha20密文（加密的文本）中。 
+在解密过程中，该算法检查MAC以确保没有人修改密文。</p>
+
+<p>1.4 ChaCha20-Poly1305如何工作？ 
+ChaCha20加密使用密钥和IV（初始化值，nonce）将明文加密为等长的密文。 
+Poly1305生成一个MAC（消息认证码）并将其附加到密文中。 最后，密文和明文的长度不同。</p>
+
+<p>1.5我可以将同一随机数重用于不同的密钥吗？ 
+不可以，每个加密的随机数和密钥都必​​须是唯一的，否则密文会妥协！</p>
+
+<hr />
+<p>package main</p>
+
+<p>import (
+	“crypto/sha256”
+	“fmt”
+	“golang.org/x/crypto/chacha20poly1305”
+	“os”
+)</p>
+
+<p>func main() {
+	pass := “Hello”
+	msg := “Pass”
+	argCount := len(os.Args[1:])
+	if argCount &gt; 0 {
+		msg = string(os.Args[1])
+	}
+	if argCount &gt; 1 {
+		pass = string(os.Args[2])
+	}
+	key := sha256.Sum256([]byte(pass))
+	aead, _ := chacha20poly1305.NewX(key[:])
+	if pass == “” {
+		a := make([]byte, 32)
+		copy(key[:32], a[:32])
+		aead, _ = chacha20poly1305.NewX(a)
+	}
+	if msg == “” {
+		a := make([]byte, 32)
+		msg = string(a)</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>}
+nonce := make([]byte, chacha20poly1305.NonceSizeX)
+ciphertext := aead.Seal(nil, nonce, []byte(msg), nil)
+plaintext, _ := aead.Open(nil, nonce, ciphertext, nil)
+fmt.Printf("Message:\t%s\n", msg)
+fmt.Printf("Passphrase:\t%s\n", pass)
+fmt.Printf("\nKey:\t%x\n", key)
+fmt.Printf("Nonce:\t%x\n", nonce)
+fmt.Printf("\nCipher stream:\t%x\n", ciphertext)
+fmt.Printf("Plain text:\t%s\n", plaintext) } ---
+</code></pre></div></div>
+
+
+  </div><a class="u-url" href="/jekyll/update/2020/06/23/ChaCha20-Poly1305%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C,-golang%E7%A4%BA%E4%BE%8B.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Silas&#39;s Note</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Silas&#39;s Note</li><li><a class="u-email" href="mailto:silas.xie@outlook.com">silas.xie@outlook.com</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>以正合, 以奇胜</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
