@@ -1,4 +1,117 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2020-06-23T10:57:12+08:00</updated><id>/feed.xml</id><title type="html">Silas’s Note</title><subtitle>以正合, 以奇胜</subtitle><entry><title type="html">ChaCha20-Poly1305如何工作, golang示例</title><link href="/jekyll/update/2020/06/23/ChaCha20-Poly1305%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C,-golang%E7%A4%BA%E4%BE%8B.html" rel="alternate" type="text/html" title="ChaCha20-Poly1305如何工作, golang示例" /><published>2020-06-23T10:28:09+08:00</published><updated>2020-06-23T10:28:09+08:00</updated><id>/jekyll/update/2020/06/23/ChaCha20-Poly1305%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C,%20golang%E7%A4%BA%E4%BE%8B</id><content type="html" xml:base="/jekyll/update/2020/06/23/ChaCha20-Poly1305%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C,-golang%E7%A4%BA%E4%BE%8B.html">&lt;p&gt;使用RFC 7539中定义的ChaCha20-Poly1305算法对消息进行加密和解密。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2020-07-21T11:20:10+08:00</updated><id>/feed.xml</id><title type="html">Silas’s Note</title><subtitle>以正合, 以奇胜</subtitle><entry><title type="html">aws-dynamodb的基本使用</title><link href="/note/2020/07/21/aws-dynamodb%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8.html" rel="alternate" type="text/html" title="aws-dynamodb的基本使用" /><published>2020-07-21T10:28:09+08:00</published><updated>2020-07-21T10:28:09+08:00</updated><id>/note/2020/07/21/aws-dynamodb%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8</id><content type="html" xml:base="/note/2020/07/21/aws-dynamodb%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8.html">&lt;h1 id=&quot;dynamodb&quot;&gt;Dynamodb&lt;/h1&gt;
+
+&lt;h1 id=&quot;dynamodb-基本概念&quot;&gt;Dynamodb 基本概念&lt;/h1&gt;
+&lt;p&gt;Amazon DynamoDB是一款完全托管的NoSQL数据库服务，可提供快速，可预测的性能和无缝可扩展性。&lt;/p&gt;
+
+&lt;h2 id=&quot;dynamodb-基本结构&quot;&gt;DynamoDB 基本结构&lt;/h2&gt;
+
+&lt;p&gt;DynamoDB 几个概念：tables, items, and attributes。（表，项目和属性）
+Table是一个item集合， 每个item又是attributes集合。可以对应理解为mongodb中 集合 文档 属性。&lt;/p&gt;
+
+&lt;h2 id=&quot;dynamodb中主键的概念&quot;&gt;DynamoDB中主键的概念&lt;/h2&gt;
+&lt;p&gt;DynamoDB不像mongodb默认情况下会生成_id来唯一标识某条数据。所以在DynamoDB中就有了主键的概念。
+指定表的主键。主键唯一标识表中的每个项目。（指定某个属性为主键）&lt;/p&gt;
+
+&lt;p&gt;DynamoDB支持两种不同的主键：
+1 分区键
+DynamoDB使用分区键的值作为内部散列函数的输入。散列函数的输出确定项目将存储在其中的分区(DynamoDB内部的物理存储)。
+2 复合主键(分区键和排序键)
+DynamoDB使用分区键值作为内部散列函数的输入。散列函数的输出确定项目将存储在其中的分区（DynamoDB内部的物理存储）。所有具有相同分区键的项目都按照排序键值存储在一起。&lt;/p&gt;
+
+&lt;p&gt;在具有分区键和排序键的表中，有可能两个项具有相同的分区键值。但是，这两个项目必须具有不同的排序键值。&lt;/p&gt;
+
+&lt;h1 id=&quot;部署dynamodb到本地服务器&quot;&gt;部署DynamoDB到本地服务器&lt;/h1&gt;
+
+&lt;h2 id=&quot;下载并解压dynamodb-code&quot;&gt;下载并解压DynamoDB code&lt;/h2&gt;
+&lt;p&gt;https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html&lt;/p&gt;
+
+&lt;h2 id=&quot;在dynamodb-目录下运行默认为8000端口&quot;&gt;在dynamodb 目录下运行（默认为8000端口）&lt;/h2&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb
+
+docker run -it -p 8686:8000 amazon/dynamodb-local:latest
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h1 id=&quot;aws-cli&quot;&gt;Aws Cli&lt;/h1&gt;
+
+&lt;h2 id=&quot;create-table&quot;&gt;create table&lt;/h2&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;aws dynamodb create-table \
+    --table-name Music \
+    --attribute-definitions \
+        AttributeName=Artist,AttributeType=S \
+        AttributeName=SongTitle,AttributeType=S \
+    --key-schema AttributeName=Artist,KeyType=HASH AttributeName=SongTitle,KeyType=RANGE \
+    --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=1 \
+    --endpoint-url http://localhost:8686
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h2 id=&quot;upsert-item&quot;&gt;upsert item&lt;/h2&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;aws dynamodb put-item \
+--table-name Music  \
+--item \
+    '{&quot;Artist&quot;: {&quot;S&quot;: &quot;No One You Know2&quot;}, &quot;SongTitle&quot;: {&quot;S&quot;: &quot;Call Me Today2&quot;}, &quot;AlbumTitle&quot;: {&quot;S&quot;: &quot;Somewhat Famous2&quot;}}' \
+--return-consumed-capacity TOTAL  \
+--endpoint-url http://localhost:8686
+
+aws dynamodb put-item \
+    --table-name Music \
+    --item \
+    '{&quot;Artist&quot;: {&quot;S&quot;: &quot;Acme Band&quot;}, &quot;SongTitle&quot;: {&quot;S&quot;: &quot;Happy Day&quot;}, &quot;AlbumTitle&quot;: {&quot;S&quot;: &quot;Songs About Life&quot;}, &quot;Awards&quot;: {&quot;N&quot;: &quot;10&quot;} }' \
+  --return-consumed-capacity TOTAL  \
+  --endpoint-url http://localhost:8686
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h2 id=&quot;get-item&quot;&gt;get item&lt;/h2&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;aws dynamodb get-item --consistent-read \
+    --table-name Music \
+    --key '{ &quot;Artist&quot;: {&quot;S&quot;: &quot;Acme Band&quot;}, &quot;SongTitle&quot;: {&quot;S&quot;: &quot;Happy Day&quot;}}' \
+  --endpoint-url http://localhost:8686
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h2 id=&quot;update-item&quot;&gt;update item&lt;/h2&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;aws dynamodb update-item \
+    --table-name Music \
+    --key '{ &quot;Artist&quot;: {&quot;S&quot;: &quot;Acme Band&quot;}, &quot;SongTitle&quot;: {&quot;S&quot;: &quot;Happy Day&quot;}}' \
+    --update-expression &quot;SET AlbumTitle = :newval&quot; \
+    --expression-attribute-values '{&quot;:newval&quot;:{&quot;S&quot;:&quot;Updated Album Title&quot;}}' \
+    --return-values ALL_NEW \
+  --endpoint-url http://localhost:8686
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h2 id=&quot;query-items&quot;&gt;query items&lt;/h2&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;aws dynamodb query \
+    --table-name Music \
+    --key-condition-expression &quot;Artist = :name&quot; \
+    --expression-attribute-values  '{&quot;:name&quot;:{&quot;S&quot;:&quot;Acme Band&quot;}}' \
+  --endpoint-url http://localhost:8686
+
+aws dynamodb query --table-name Music --key-conditions file://key-conditions.json --endpoint-url http://localhost:8686
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h2 id=&quot;list-tables&quot;&gt;list tables&lt;/h2&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;aws dynamodb list-tables --endpoint-url http://localhost:8686
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h2 id=&quot;desc-table&quot;&gt;desc table&lt;/h2&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;aws dynamodb describe-table --table-name Music --endpoint-url http://localhost:8686
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h2 id=&quot;resource-limit&quot;&gt;resource limit&lt;/h2&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;aws dynamodb describe-limits --endpoint-url http://dynamodb-local:8686 --region us-west-2 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h2 id=&quot;create-a-global-secondary-index&quot;&gt;Create a Global Secondary Index&lt;/h2&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;aws dynamodb update-table \
+    --table-name Music \
+    --attribute-definitions AttributeName=AlbumTitle,AttributeType=S \
+    --endpoint-url http://localhost:8686 \
+    --global-secondary-index-updates \
+    &quot;[{\&quot;Create\&quot;:{\&quot;IndexName\&quot;: \&quot;AlbumTitle-index\&quot;,\&quot;KeySchema\&quot;:[{\&quot;AttributeName\&quot;:\&quot;AlbumTitle\&quot;,\&quot;KeyType\&quot;:\&quot;HASH\&quot;}], \
+    \&quot;ProvisionedThroughput\&quot;: {\&quot;ReadCapacityUnits\&quot;: 10, \&quot;WriteCapacityUnits\&quot;: 5      },\&quot;Projection\&quot;:{\&quot;ProjectionType\&quot;:\&quot;ALL\&quot;}}}]&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h2 id=&quot;query-the-global-secondary-index&quot;&gt;Query the Global Secondary Index&lt;/h2&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;aws dynamodb query \
+--table-name Music \
+--index-name AlbumTitle-index \
+--key-condition-expression &quot;AlbumTitle = :name&quot; \
+--expression-attribute-values  '{&quot;:name&quot;:{&quot;S&quot;:&quot;Somewhat Famous&quot;}}' \
+--endpoint-url http://localhost:8686 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h2 id=&quot;delete-table&quot;&gt;delete table&lt;/h2&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;aws dynamodb delete-table --table-name Music --endpoint-url http://localhost:8686 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.NodeJs.html&lt;/p&gt;</content><author><name></name></author><summary type="html">Dynamodb</summary></entry><entry><title type="html">ChaCha20-Poly1305如何工作, golang示例</title><link href="/jekyll/update/2020/06/23/ChaCha20-Poly1305%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C,-golang%E7%A4%BA%E4%BE%8B.html" rel="alternate" type="text/html" title="ChaCha20-Poly1305如何工作, golang示例" /><published>2020-06-23T10:28:09+08:00</published><updated>2020-06-23T10:28:09+08:00</updated><id>/jekyll/update/2020/06/23/ChaCha20-Poly1305%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C,%20golang%E7%A4%BA%E4%BE%8B</id><content type="html" xml:base="/jekyll/update/2020/06/23/ChaCha20-Poly1305%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C,-golang%E7%A4%BA%E4%BE%8B.html">&lt;p&gt;使用RFC 7539中定义的ChaCha20-Poly1305算法对消息进行加密和解密。&lt;/p&gt;
 
 &lt;p&gt;1.1什么是ChaCha20-Poly1305 ？ 
 ChaCha20-Poly1305表示使用Poly1305身份验证器以AEAD模式运行的ChaCha20 （加密和解密算法）。&lt;/p&gt;
@@ -17,21 +130,20 @@ ChaCha20加密使用密钥和IV（初始化值，nonce）将明文加密为等�
 Poly1305生成一个MAC（消息认证码）并将其附加到密文中。 最后，密文和明文的长度不同。&lt;/p&gt;
 
 &lt;p&gt;1.5我可以将同一随机数重用于不同的密钥吗？ 
-不可以，每个加密的随机数和密钥都必​​须是唯一的，否则密文会妥协！&lt;/p&gt;
+不可以，每个加密的随机数和密钥都必​​须是唯一的，否则密文会妥协&lt;/p&gt;
 
-&lt;hr /&gt;
-&lt;p&gt;package main&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;package main
 
-&lt;p&gt;import (
-	“crypto/sha256”
-	“fmt”
-	“golang.org/x/crypto/chacha20poly1305”
-	“os”
-)&lt;/p&gt;
+import (
+	&quot;crypto/sha256&quot;
+	&quot;fmt&quot;
+	&quot;golang.org/x/crypto/chacha20poly1305&quot;
+	&quot;os&quot;
+)
 
-&lt;p&gt;func main() {
-	pass := “Hello”
-	msg := “Pass”
+func main() {
+	pass := &quot;Hello&quot;
+	msg := &quot;Pass&quot;
 	argCount := len(os.Args[1:])
 	if argCount &amp;gt; 0 {
 		msg = string(os.Args[1])
@@ -41,23 +153,28 @@ Poly1305生成一个MAC（消息认证码）并将其附加到密文中。 最�
 	}
 	key := sha256.Sum256([]byte(pass))
 	aead, _ := chacha20poly1305.NewX(key[:])
-	if pass == “” {
+	if pass == &quot;&quot; {
 		a := make([]byte, 32)
 		copy(key[:32], a[:32])
 		aead, _ = chacha20poly1305.NewX(a)
 	}
-	if msg == “” {
+	if msg == &quot;&quot; {
 		a := make([]byte, 32)
-		msg = string(a)&lt;/p&gt;
+		msg = string(a)
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;}
-nonce := make([]byte, chacha20poly1305.NonceSizeX)
-ciphertext := aead.Seal(nil, nonce, []byte(msg), nil)
-plaintext, _ := aead.Open(nil, nonce, ciphertext, nil)
-fmt.Printf(&quot;Message:\t%s\n&quot;, msg)
-fmt.Printf(&quot;Passphrase:\t%s\n&quot;, pass)
-fmt.Printf(&quot;\nKey:\t%x\n&quot;, key)
-fmt.Printf(&quot;Nonce:\t%x\n&quot;, nonce)
-fmt.Printf(&quot;\nCipher stream:\t%x\n&quot;, ciphertext)
-fmt.Printf(&quot;Plain text:\t%s\n&quot;, plaintext) } ---
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">使用RFC 7539中定义的ChaCha20-Poly1305算法对消息进行加密和解密。</summary></entry></feed>
+	}
+	nonce := make([]byte, chacha20poly1305.NonceSizeX)
+	ciphertext := aead.Seal(nil, nonce, []byte(msg), nil)
+	plaintext, _ := aead.Open(nil, nonce, ciphertext, nil)
+	fmt.Printf(&quot;Message:\t%s\n&quot;, msg)
+	fmt.Printf(&quot;Passphrase:\t%s\n&quot;, pass)
+	fmt.Printf(&quot;\nKey:\t%x\n&quot;, key)
+	fmt.Printf(&quot;Nonce:\t%x\n&quot;, nonce)
+	fmt.Printf(&quot;\nCipher stream:\t%x\n&quot;, ciphertext)
+	fmt.Printf(&quot;Plain text:\t%s\n&quot;, plaintext)
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://medium.com/asecuritysite-when-bob-met-alice/go-and-chacha-6645684e7d&quot;&gt;https://medium.com/asecuritysite-when-bob-met-alice/go-and-chacha-6645684e7d&lt;/a&gt;
+&lt;a href=&quot;https://tools.ietf.org/html/rfc7539&quot;&gt;rfc7539&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">使用RFC 7539中定义的ChaCha20-Poly1305算法对消息进行加密和解密。</summary></entry></feed>
