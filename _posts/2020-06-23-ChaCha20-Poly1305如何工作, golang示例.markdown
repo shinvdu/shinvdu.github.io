@@ -23,7 +23,7 @@ ChaCha20加密使用密钥和IV（初始化值，nonce）将明文加密为等�
 Poly1305生成一个MAC（消息认证码）并将其附加到密文中。 最后，密文和明文的长度不同。
 
 1.5我可以将同一随机数重用于不同的密钥吗？ 
-不可以，每个加密的随机数和密钥都必​​须是唯一的，否则密文会妥协！
+不可以，每个加密的随机数和密钥都必​​须是唯一的，否则密文会妥协
 
 ```
 package main
@@ -67,8 +67,9 @@ func main() {
 	fmt.Printf("\nCipher stream:\t%x\n", ciphertext)
 	fmt.Printf("Plain text:\t%s\n", plaintext)
 }
+
 ```
 
 
-[https://medium.com/asecuritysite-when-bob-met-alice/go-and-chacha-6645684e7d]: https://medium.com/asecuritysite-when-bob-met-alice/go-and-chacha-6645684e7d
-[rfc7539]:   https://tools.ietf.org/html/rfc7539
+[https://medium.com/asecuritysite-when-bob-met-alice/go-and-chacha-6645684e7d](https://medium.com/asecuritysite-when-bob-met-alice/go-and-chacha-6645684e7d)
+[rfc7539](https://tools.ietf.org/html/rfc7539)
