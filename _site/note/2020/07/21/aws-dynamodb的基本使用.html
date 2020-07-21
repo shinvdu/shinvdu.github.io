@@ -59,11 +59,13 @@ Table是一个item集合， 每个item又是attributes集合。可以对应理�
 <p>DynamoDB不像mongodb默认情况下会生成_id来唯一标识某条数据。所以在DynamoDB中就有了主键的概念。
 指定表的主键。主键唯一标识表中的每个项目。（指定某个属性为主键）</p>
 
-<p>DynamoDB支持两种不同的主键：
-1 分区键
-DynamoDB使用分区键的值作为内部散列函数的输入。散列函数的输出确定项目将存储在其中的分区(DynamoDB内部的物理存储)。
-2 复合主键(分区键和排序键)
-DynamoDB使用分区键值作为内部散列函数的输入。散列函数的输出确定项目将存储在其中的分区（DynamoDB内部的物理存储）。所有具有相同分区键的项目都按照排序键值存储在一起。</p>
+<p>DynamoDB支持两种不同的主键：</p>
+<ul>
+  <li>1 分区键
+DynamoDB使用分区键的值作为内部散列函数的输入。散列函数的输出确定项目将存储在其中的分区(DynamoDB内部的物理存储)。</li>
+  <li>2 复合主键(分区键和排序键)
+DynamoDB使用分区键值作为内部散列函数的输入。散列函数的输出确定项目将存储在其中的分区（DynamoDB内部的物理存储）。所有具有相同分区键的项目都按照排序键值存储在一起。</li>
+</ul>
 
 <p>在具有分区键和排序键的表中，有可能两个项具有相同的分区键值。但是，这两个项目必须具有不同的排序键值。</p>
 
@@ -159,6 +161,31 @@ aws dynamodb query --table-name Music --key-conditions file://key-conditions.jso
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>aws dynamodb delete-table --table-name Music --endpoint-url http://localhost:8686 
 </code></pre></div></div>
 <p>https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.NodeJs.html</p>
+
+<p>[program:jenkins]
+directory=/home/git/
+command=java -Dmail.smtp.starttls.enable=”true” -jar /usr/local/jenkins/jenkins.war –httpPort=8000 –prefix=/jenkins
+autostart=true
+autorestart=true
+stopsignal=QUIT
+user=git
+stdout_logfile=/var/log/supervisor/stdout_jenkins.log
+stderr_logfile=/var/log/supervisor/stder_jenkins.log
+environment = HOME=”/home/git”, USER=”git”</p>
+
+<p>-Dmail.smtp.starttls.enable=true</p>
+
+<ol>
+  <li>SMTP server=smtp.office365.com</li>
+  <li>Default user e-mail suffix=@mycompany.com</li>
+  <li>Use SMTP Authentication (Checked)</li>
+  <li>User Name = my-name@mycompany.com</li>
+  <li>password = <strong>**</strong><strong>**</strong><strong>**</strong>**
+<strong>6. Use SSL (Un-Checked)</strong></li>
+  <li>SMTP Port = 587</li>
+  <li>Reply-To Address = my-name@mycompany.com</li>
+  <li>Charset = UTF8</li>
+</ol>
 
   </div><a class="u-url" href="/note/2020/07/21/aws-dynamodb%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8.html" hidden></a>
 </article>

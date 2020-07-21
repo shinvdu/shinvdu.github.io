@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2020-07-21T11:20:10+08:00</updated><id>/feed.xml</id><title type="html">Silas’s Note</title><subtitle>以正合, 以奇胜</subtitle><entry><title type="html">aws-dynamodb的基本使用</title><link href="/note/2020/07/21/aws-dynamodb%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8.html" rel="alternate" type="text/html" title="aws-dynamodb的基本使用" /><published>2020-07-21T10:28:09+08:00</published><updated>2020-07-21T10:28:09+08:00</updated><id>/note/2020/07/21/aws-dynamodb%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8</id><content type="html" xml:base="/note/2020/07/21/aws-dynamodb%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8.html">&lt;h1 id=&quot;dynamodb&quot;&gt;Dynamodb&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2020-07-21T11:24:03+08:00</updated><id>/feed.xml</id><title type="html">Silas’s Note</title><subtitle>以正合, 以奇胜</subtitle><entry><title type="html">aws-dynamodb的基本使用</title><link href="/note/2020/07/21/aws-dynamodb%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8.html" rel="alternate" type="text/html" title="aws-dynamodb的基本使用" /><published>2020-07-21T10:28:09+08:00</published><updated>2020-07-21T10:28:09+08:00</updated><id>/note/2020/07/21/aws-dynamodb%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8</id><content type="html" xml:base="/note/2020/07/21/aws-dynamodb%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8.html">&lt;h1 id=&quot;dynamodb&quot;&gt;Dynamodb&lt;/h1&gt;
 
 &lt;h1 id=&quot;dynamodb-基本概念&quot;&gt;Dynamodb 基本概念&lt;/h1&gt;
 &lt;p&gt;Amazon DynamoDB是一款完全托管的NoSQL数据库服务，可提供快速，可预测的性能和无缝可扩展性。&lt;/p&gt;
@@ -12,11 +12,13 @@ Table是一个item集合， 每个item又是attributes集合。可以对应理�
 &lt;p&gt;DynamoDB不像mongodb默认情况下会生成_id来唯一标识某条数据。所以在DynamoDB中就有了主键的概念。
 指定表的主键。主键唯一标识表中的每个项目。（指定某个属性为主键）&lt;/p&gt;
 
-&lt;p&gt;DynamoDB支持两种不同的主键：
-1 分区键
-DynamoDB使用分区键的值作为内部散列函数的输入。散列函数的输出确定项目将存储在其中的分区(DynamoDB内部的物理存储)。
-2 复合主键(分区键和排序键)
-DynamoDB使用分区键值作为内部散列函数的输入。散列函数的输出确定项目将存储在其中的分区（DynamoDB内部的物理存储）。所有具有相同分区键的项目都按照排序键值存储在一起。&lt;/p&gt;
+&lt;p&gt;DynamoDB支持两种不同的主键：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;1 分区键
+DynamoDB使用分区键的值作为内部散列函数的输入。散列函数的输出确定项目将存储在其中的分区(DynamoDB内部的物理存储)。&lt;/li&gt;
+  &lt;li&gt;2 复合主键(分区键和排序键)
+DynamoDB使用分区键值作为内部散列函数的输入。散列函数的输出确定项目将存储在其中的分区（DynamoDB内部的物理存储）。所有具有相同分区键的项目都按照排序键值存储在一起。&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;p&gt;在具有分区键和排序键的表中，有可能两个项具有相同的分区键值。但是，这两个项目必须具有不同的排序键值。&lt;/p&gt;
 
@@ -111,7 +113,32 @@ aws dynamodb query --table-name Music --key-conditions file://key-conditions.jso
 &lt;h2 id=&quot;delete-table&quot;&gt;delete table&lt;/h2&gt;
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;aws dynamodb delete-table --table-name Music --endpoint-url http://localhost:8686 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.NodeJs.html&lt;/p&gt;</content><author><name></name></author><summary type="html">Dynamodb</summary></entry><entry><title type="html">ChaCha20-Poly1305如何工作, golang示例</title><link href="/jekyll/update/2020/06/23/ChaCha20-Poly1305%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C,-golang%E7%A4%BA%E4%BE%8B.html" rel="alternate" type="text/html" title="ChaCha20-Poly1305如何工作, golang示例" /><published>2020-06-23T10:28:09+08:00</published><updated>2020-06-23T10:28:09+08:00</updated><id>/jekyll/update/2020/06/23/ChaCha20-Poly1305%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C,%20golang%E7%A4%BA%E4%BE%8B</id><content type="html" xml:base="/jekyll/update/2020/06/23/ChaCha20-Poly1305%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C,-golang%E7%A4%BA%E4%BE%8B.html">&lt;p&gt;使用RFC 7539中定义的ChaCha20-Poly1305算法对消息进行加密和解密。&lt;/p&gt;
+&lt;p&gt;https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.NodeJs.html&lt;/p&gt;
+
+&lt;p&gt;[program:jenkins]
+directory=/home/git/
+command=java -Dmail.smtp.starttls.enable=”true” -jar /usr/local/jenkins/jenkins.war –httpPort=8000 –prefix=/jenkins
+autostart=true
+autorestart=true
+stopsignal=QUIT
+user=git
+stdout_logfile=/var/log/supervisor/stdout_jenkins.log
+stderr_logfile=/var/log/supervisor/stder_jenkins.log
+environment = HOME=”/home/git”, USER=”git”&lt;/p&gt;
+
+&lt;p&gt;-Dmail.smtp.starttls.enable=true&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;SMTP server=smtp.office365.com&lt;/li&gt;
+  &lt;li&gt;Default user e-mail suffix=@mycompany.com&lt;/li&gt;
+  &lt;li&gt;Use SMTP Authentication (Checked)&lt;/li&gt;
+  &lt;li&gt;User Name = my-name@mycompany.com&lt;/li&gt;
+  &lt;li&gt;password = &lt;strong&gt;**&lt;/strong&gt;&lt;strong&gt;**&lt;/strong&gt;&lt;strong&gt;**&lt;/strong&gt;**
+&lt;strong&gt;6. Use SSL (Un-Checked)&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;SMTP Port = 587&lt;/li&gt;
+  &lt;li&gt;Reply-To Address = my-name@mycompany.com&lt;/li&gt;
+  &lt;li&gt;Charset = UTF8&lt;/li&gt;
+&lt;/ol&gt;</content><author><name></name></author><summary type="html">Dynamodb</summary></entry><entry><title type="html">ChaCha20-Poly1305如何工作, golang示例</title><link href="/jekyll/update/2020/06/23/ChaCha20-Poly1305%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C,-golang%E7%A4%BA%E4%BE%8B.html" rel="alternate" type="text/html" title="ChaCha20-Poly1305如何工作, golang示例" /><published>2020-06-23T10:28:09+08:00</published><updated>2020-06-23T10:28:09+08:00</updated><id>/jekyll/update/2020/06/23/ChaCha20-Poly1305%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C,%20golang%E7%A4%BA%E4%BE%8B</id><content type="html" xml:base="/jekyll/update/2020/06/23/ChaCha20-Poly1305%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C,-golang%E7%A4%BA%E4%BE%8B.html">&lt;p&gt;使用RFC 7539中定义的ChaCha20-Poly1305算法对消息进行加密和解密。&lt;/p&gt;
 
 &lt;p&gt;1.1什么是ChaCha20-Poly1305 ？ 
 ChaCha20-Poly1305表示使用Poly1305身份验证器以AEAD模式运行的ChaCha20 （加密和解密算法）。&lt;/p&gt;

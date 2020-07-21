@@ -21,9 +21,9 @@ DynamoDB不像mongodb默认情况下会生成_id来唯一标识某条数据。�
 指定表的主键。主键唯一标识表中的每个项目。（指定某个属性为主键）
 
 DynamoDB支持两种不同的主键：
-1 分区键
+- 1 分区键
 DynamoDB使用分区键的值作为内部散列函数的输入。散列函数的输出确定项目将存储在其中的分区(DynamoDB内部的物理存储)。
-2 复合主键(分区键和排序键)
+- 2 复合主键(分区键和排序键)
 DynamoDB使用分区键值作为内部散列函数的输入。散列函数的输出确定项目将存储在其中的分区（DynamoDB内部的物理存储）。所有具有相同分区键的项目都按照排序键值存储在一起。
 
 在具有分区键和排序键的表中，有可能两个项具有相同的分区键值。但是，这两个项目必须具有不同的排序键值。
@@ -132,3 +132,27 @@ aws dynamodb query \
 aws dynamodb delete-table --table-name Music --endpoint-url http://localhost:8686 
 ```
 https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.NodeJs.html
+
+[program:jenkins]
+directory=/home/git/
+command=java -Dmail.smtp.starttls.enable="true" -jar /usr/local/jenkins/jenkins.war --httpPort=8000 --prefix=/jenkins
+autostart=true
+autorestart=true
+stopsignal=QUIT
+user=git
+stdout_logfile=/var/log/supervisor/stdout_jenkins.log
+stderr_logfile=/var/log/supervisor/stder_jenkins.log
+environment = HOME="/home/git", USER="git"
+
+
+-Dmail.smtp.starttls.enable=true
+
+1. SMTP server=smtp.office365.com
+2. Default user e-mail suffix=@mycompany.com
+3. Use SMTP Authentication (Checked)
+4. User Name = my-name@mycompany.com
+5. password = ********************
+**6. Use SSL (Un-Checked)**
+7. SMTP Port = 587
+8. Reply-To Address = my-name@mycompany.com
+9. Charset = UTF8
